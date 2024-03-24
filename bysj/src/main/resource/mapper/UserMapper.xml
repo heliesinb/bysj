@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.bysj.dao.UserDao">
+    <select id="getUserByMassage" resultType="com.example.bysj.pojo.User">
+       	SELECT * FROM easyUser WHERE
+       	username=#{username} AND password=#{password} AND state=1
+    </select>
+
+    <select id="getAllUser" resultType="com.example.bysj.pojo.User">
+        select s.username ,s.Id,s.password ,s.email,s.state,r.rolename as role from easyUser s
+        left join role r on s.roleId = r.roleId
+        <if test="username !=null ">
+            WHERE username like #{username}
+        </if>
+        order by s.roleId
+        LIMIT #{pageStart},#{pageSize}
+    </select>
+
+    <select id="getList" resultType="com.example.bysj.pojo.User">
+        select s.username ,s.password ,s.email,s.state,r.rolename as role from easyUser s
+        left join role r on s.roleId = r.roleId
+    </select>
+
+    <select id="getUserCounts" resultType="java.lang.Integer">
+        SELECT count(*) FROM `easyuser`
+        <if test="username !=null ">
+            WHERE username like #{username}
+        </if>
+    </select>
+
+    <update id="updateState">
+            UPDATE easyuser SET state = #{state} WHERE id = #{id}
+    </update>
+
+    <insert id="addUser">
+         INSERT INTO easyuser
+        (username,password,email,roleId,state)
+        VALUE
+        (#{username},#{password},#{email},#{roleId},#{state})
+    </insert>
+
+    <delete id="deleteUser">
+        DELETE  FROM  easyuser WHERE id=#{id}
+    </delete>
+
+    <select id="getUpdateUser" resultType="com.example.bysj.pojo.User">
+        SELECT * FROM easyuser WHERE id=#{id}
+    </select>
+
+    <update id="editUser">
+        UPDATE easyuser SET username=#{username},password=#{password},
+        email=#{email}
+        WHERE id=#{id}
+    </update>
+
+    <update id="editRole">
+        UPDATE easyuser
+        set roleId =#{roleId}
+        where username =#{username}
+    </update>
+
+    <select id="countLoginRecord" resultType="Integer">
+        SELECT COUNT(*) from loginRecord
+        WHERE time like "%${time}%"    <!--    模糊查询第一种"%"#{time}"%"     第二种"%${time}%"-->
+    </select>
+
+    <select id="countPerNum" resultType="Integer">
+        SELECT COUNT(DISTINCT(username)) as num from loginRecord where time like "%${time}%"
+    </select>
+
+    <insert id="addLoginRecord">
+        INSERT into loginRecord(id,username,ip,time)
+        VALUES (#{id},#{username},#{ip},#{time})
+    </insert>
+
+    <select id="queryUserInfo" resultType="com.example.bysj.pojo.UserInfo">
+        SELECT * from user_info
+        WHERE username =#{username}
+    </select>
+
+    <update id="updateUserInfo" >
+        UPDATE user_info
+        SET sex=#{sex},birth=#{birth},address=#{address},phone=#{phone},idcard=#{idcard},trueName=#{trueName}
+        WHERE username =#{username}
+    </update>
+
+    <select id="queryNum" resultType="Integer">
+      SELECT COUNT(*)  from user_info
+        WHERE username=#{username}
+    </select>
+    <insert id="addUserInfo">
+        INSERT INTO user_info(sex,birth,address,phone,idcard,trueName,username)
+        VALUES (#{sex},#{birth},#{address},#{phone},#{idcard},#{trueName},#{username})
+    </insert>
+
+    <update id="editPsw">
+        UPDATE easyuser set password =#{newPsw}
+        WHERE username=#{username}
+    </update>
+
+    <select id="selectByName"  resultType="com.example.bysj.pojo.User">
+        select * from easyuser
+        WHERE username=#{username}
+    </select>
+
+    <select id="selectByID"  resultType="com.example.bysj.pojo.User">
+       select s.username ,s.password ,s.email,s.state,r.rolename as role from easyuser s
+        left join role r on s.roleId = r.roleId
+         WHERE s.id=#{id}
+    </select>
+
+    <select id="getIdByName" resultType="Integer">
+        select id from easyuser
+        where username like #{username}
+    </select>
+
+    <insert id="regist">
+         INSERT INTO easyuser
+        (username,password,email,roleId,state)
+        VALUE
+        (#{username},#{password},#{email},#{roleId},#{state})
+    </insert>
+
+    <select id="check" resultType="com.example.bysj.pojo.User">
+        select * from easyuser
+        where
+        username = #{username}
+    </select>
+
+    <select id="getUserByUsername" resultType="com.example.bysj.pojo.User">
+        SELECT * FROM easyUser WHERE
+            username=#{username}
+    </select>
+
+</mapper>

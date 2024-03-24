@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.bysj.dao.CourseDao">
+    <select id="getAllList" resultType="com.example.bysj.pojo.Course">
+        select c.cid,c.cname,c.remake,c.introduction,c.nandu,c.effort,c.num,e.username from course c
+        LEFT JOIN easyuser e ON c.uid = e.id
+    </select>
+    <select id="getList" resultType="com.example.bysj.pojo.Course">
+        select cid,cname,remake,introduction,nandu,effort,num from course
+        where uid=#{uid}
+        and cname like #{cname}
+        and status='1'
+    </select>
+    <insert id="addCourse">
+        INSERT into course(cname,uid,remake,introduction,nandu,effort,status,num)
+        values(#{cname},#{uid},#{remake},#{introduction},#{nandu},#{effort},#{status},#{num})
+    </insert>
+
+
+    <select id="checkCourse"  resultType="Integer">
+        select count(*) from course c
+        LEFT join easyuser su on c.uid =su.id
+        where c.nandu=#{nandu}
+        and c.introduction=#{introduction}
+        and su.username =#{username}
+    </select>
+<!--    查看待审核选题-->
+    <select id="verifyCourse" resultType="com.example.bysj.pojo.Course">
+   select c.cid,c.cname,c.remake,c.introduction,c.nandu,c.num,c.effort,s.username
+    from course c left join easyuser s on c.uid=s.id
+    where cname like #{cname}
+    and status='0'
+     and s.username like #{username}
+    </select>
+<!--    查看可选选题-->
+    <select id="view" resultType="com.example.bysj.pojo.Course">
+        select c.cid,c.cname,c.num,c.remake,c.introduction,c.nandu,c.effort,s.username
+        from course c left join easyuser s on c.uid=s.id
+        where cname like #{cname}
+        and status='1' and s.id in(
+        select id FROM easyuser
+        where username like #{username}
+        )
+    </select>
+<!--    审核选题-->
+    <update id="editCourse">
+        UPDATE course
+        SET cname =#{cname},
+            num=#{num},remake=#{remake},introduction=#{introduction},nandu=#{nandu},effort=#{effort},status='1'
+        where cid=#{cid}
+    </update>
+    <delete id="deleteCourse">
+        DELETE  FROM course
+        WHERE cid=#{cid}
+    </delete>
+    <insert id="chooseCourse">
+        INSERT INTO source (cid,username)
+       values(#{cid},#{stuName})
+    </insert>
+
+
+<!--    查看自己的选题-->
+    <select id="myCourse" resultType="com.example.bysj.pojo.Course" >
+      select c.cid,c.cname,su.username,c.remake,c.introduction,c.nandu,c.effort,c.num from course c
+      left join source s on c.cid = s.cid
+      left join easyuser su on c.uid=su.id
+      where s.username = #{stuName}
+      and c.cname like #{cname}
+      and c.uid in (SELECT id from easyuser
+      WHERE username like #{username})
+    </select>
+<!--    退题-->
+    <delete id="dropCourse">
+        DELETE from source
+        where cid=#{cid}
+        and username=#{stuName}
+    </delete>
+    <update id="addCourseNum">
+        update course set num=num+1
+        where cid =#{cid}
+    </update>
+<!--    查看选题学生名单-->
+    <select id="sourceList" resultType="com.example.bysj.pojo.User">
+        select su.username,su.email from easyuser su
+        left join source s on s.username=su.username
+        where s.cid=#{cid}
+    </select>
+    <update id="editCourseNum">
+        update course set num=num-1
+        where cid =#{cid}
+    </update>
+    <select id="checkCourseNum" resultType="Integer">
+        select num from course
+        where cid =#{cid}
+    </select>
+
+</mapper>

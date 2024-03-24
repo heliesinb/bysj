@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bysj.dao.VisitorDao">
+    <select id="getAllVisitor" resultType="com.example.bysj.pojo.Visitor">
+        select username,time,ip from loginrecord
+        <if test="username !=null ">
+            WHERE username like #{username} and time like #{time}
+        </if>
+        order by time desc
+        LIMIT #{pageStart},#{pageSize}
+    </select>
+
+    <select id="getAllVisitor2" resultType="com.example.bysj.pojo.Visitor">
+        select username,time,ip from loginrecord
+        <if test="time!=null ">
+            WHERE time like #{time}
+        </if>
+        order by time desc
+        LIMIT #{pageStart},#{pageSize}
+    </select>
+
+    <select id="getVisitorCounts" resultType="java.lang.Integer">
+        SELECT count(*) FROM `loginrecord`
+        <if test="username !=null ">
+            WHERE username like #{username} and time like #{time}
+        </if>
+    </select>
+
+    <select id="getVisitorCounts2" resultType="java.lang.Integer">
+        SELECT count(*) FROM `loginrecord`
+        <if test="time !=null ">
+            WHERE time like #{time}
+        </if>
+    </select>
+
+    <delete id="deleteVisitor">
+        DELETE  FROM  loginrecord WHERE time=#{time}
+    </delete>
+</mapper>

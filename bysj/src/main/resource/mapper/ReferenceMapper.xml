@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.bysj.dao.ReferenceDao">
+
+
+    <select id="getAllReference" resultType="com.example.bysj.pojo.Reference">
+        SELECT * FROM reference
+        <if test="aname !=null ">
+            WHERE aname like #{aname}
+        </if>
+        LIMIT #{pageStart},#{pageSize}
+    </select>
+
+    <select id="getReferenceCounts" resultType="java.lang.Integer">
+        SELECT count(*) FROM reference
+        <if test="aname !=null ">
+            WHERE aname like #{aname}
+        </if>
+    </select>
+
+
+    <insert id="addReference">
+        INSERT INTO reference
+            (aname,author,publication,date,type)
+            value
+            (#{aname}, #{author},#{publication},#{date},#{type})
+    </insert>
+
+    <delete id="deleteReference">
+        DELETE FROM reference WHERE  id = #{id}
+    </delete>
+
+    <select id="getUpdateReference" resultType="com.example.bysj.pojo.Reference">
+        SELECT * FROM reference WHERE id = #{id}
+    </select>
+
+    <update id="editReference">
+        UPDATE reference SET aname = #{aname} , author = #{author} , publication = #{publication} , date = #{date}, type = #{type} WHERE id= #{id}
+    </update>
+
+
+
+
+</mapper>

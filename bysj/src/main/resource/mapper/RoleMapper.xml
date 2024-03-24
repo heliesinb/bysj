@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bysj.dao.RoleDao">
+
+    <select id="getRole" resultType="com.example.bysj.pojo.Role">
+        SELECT * from role
+        <if test="rolename !=null">
+            where rolename like #{rolename}
+            ORDER BY sort
+        </if>
+    </select>
+
+    <select id="getAllRole" resultType="com.example.bysj.pojo.Role">
+       SELECT * from role
+           WHERE status =1
+    </select>
+
+    <insert id="addRole" >
+        INSERT INTO role
+        (roleId,roleName,sort,status,ps) VALUE
+        (#{roleId},#{roleName},#{sort},#{status},#{ps})
+    </insert>
+
+    <delete id="delete">
+        DELETE from role
+        where roleId =#{roleId}
+    </delete>
+
+    <update id="changeStatus">
+        update role set status =(
+        case
+        when status =true then false
+        else true end)
+         where roleId =#{roleId}
+    </update>
+
+    <select id="getUpdateRole" resultType="com.example.bysj.pojo.Role">
+        SELECT * FROM role WHERE roleId=#{roleId}
+    </select>
+
+    <update id="editUser">
+        UPDATE role SET roleName=#{roleName},sort=#{sort},
+        ps=#{ps}
+        WHERE roleId=#{roleId}
+    </update>
+</mapper>
